@@ -1,8 +1,8 @@
-import * as mongoose from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { IAddress } from 'src/interfaces';
+import { Exclude } from 'class-transformer';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -12,6 +12,7 @@ export class User {
   name: string;
 
   @Prop()
+  @Exclude()
   password: string;
 
   @Prop({ default: false })
