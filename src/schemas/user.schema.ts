@@ -1,3 +1,5 @@
+import * as mongoose from 'mongoose';
+import * as bcrypt from 'bcrypt';
 import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { IAddress } from 'src/interfaces';
@@ -31,3 +33,14 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.pre('save', async function (next) {
+  try {
+    if (!this.isModified('password')) return next();
+    const hash = await bcrypt.hash(this['password'], 10);
+    this['password'] = hash;
+    return next();
+  } catch (error) {
+    return next(error);
+  }
+});
