@@ -2,17 +2,15 @@ import * as bcrypt from 'bcrypt';
 import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { IAddress } from 'src/interfaces';
-import { Exclude } from 'class-transformer';
 
 export type UserDocument = HydratedDocument<User>;
 
 @Schema()
 export class User {
   @Prop()
-  name: string;
+  username: string;
 
   @Prop()
-  @Exclude()
   password: string;
 
   @Prop({ default: false })
