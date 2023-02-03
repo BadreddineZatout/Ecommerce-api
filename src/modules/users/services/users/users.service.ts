@@ -1,8 +1,8 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { IUser } from 'src/interfaces';
-import { LoginDTO, RegisterDTO } from 'src/modules/auth/dtos/auth.dto';
+import { IUser, IAuthPayload } from '../../../../interfaces';
+import { LoginDTO, RegisterDTO } from '../../../auth/dtos/auth.dto';
 
 import * as bcrypt from 'bcrypt';
 
@@ -45,8 +45,12 @@ export class UsersService {
     throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
   }
 
-  async findByName(payload: any) {
+  async findByName(payload: IAuthPayload) {
     const { username } = payload;
     return await this.userModel.findOne({ username });
+  }
+
+  async findAll() {
+    return this.userModel.find();
   }
 }

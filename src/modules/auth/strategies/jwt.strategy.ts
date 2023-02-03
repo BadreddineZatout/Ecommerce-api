@@ -21,7 +21,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         false,
       );
     }
-
     return done(null, user, payload.iat);
   }
 }

@@ -1,8 +1,19 @@
-import { Post, UsePipes, ValidationPipe, Body } from '@nestjs/common';
+import { IAuthPayload } from '../../../../interfaces';
+import {
+  Post,
+  UsePipes,
+  ValidationPipe,
+  Body,
+  Get,
+  UseGuards,
+} from '@nestjs/common';
 import { UsersService } from './../../../users/services/users/users.service';
 import { Controller } from '@nestjs/common';
 import { LoginDTO, RegisterDTO } from '../../dtos/auth.dto';
 import { AuthService } from '../../services/auth.service';
+import { AuthGuard } from '@nestjs/passport';
+import { User } from 'src/utils/user.decorator';
+import { SellerGuard } from '../../guards/seller.guard';
 
 @Controller('')
 export class AuthController {
@@ -11,11 +22,18 @@ export class AuthController {
     private authService: AuthService,
   ) {}
 
+  @Get('users')
+  @UseGuards(AuthGuard('jwt'), SellerGuard)
+  async findAll(@User() user: any) {
+    console.log(user);
+    return await this.usersService.findAll();
+  }
+
   @Post('login')
   @UsePipes(new ValidationPipe())
   async login(@Body() userDTO: LoginDTO) {
     const user = await this.usersService.findByLogin(userDTO);
-    const payload = {
+    const payload: IAuthPayload = {
       username: user.username,
       isSeller: user.isSeller,
     };
@@ -29,7 +47,7 @@ export class AuthController {
   @UsePipes(new ValidationPipe())
   async register(@Body() userDTO: RegisterDTO) {
     const user = await this.usersService.create(userDTO);
-    const payload = {
+    const payload: IAuthPayload = {
       username: user.username,
       isSeller: user.isSeller,
     };
