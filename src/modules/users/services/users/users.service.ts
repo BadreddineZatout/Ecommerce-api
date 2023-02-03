@@ -44,4 +44,9 @@ export class UsersService {
     }
     throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
   }
+
+  async findByName(payload: any) {
+    const { username } = payload;
+    return await this.userModel.findOne({ username });
+  }
 }
